@@ -5,50 +5,69 @@ import com.restapidemo.restapi.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 public class MyController {
 
     @Autowired
     private CourseService courseService;
 
     @RequestMapping("/")
-    public String home() {
-        return "Hello home page";
-    }
-
-    @RequestMapping(value = "courses", method = RequestMethod.GET)
-    @ResponseBody
-    public List<Course> getCourses() {
-        return this.courseService.courses();
+    public String getCourses(Model model) {
+        model.addAttribute("listCourses", courseService.courses());
+        return "index.html";
     }
 
     @RequestMapping(value = "courses/{courseId}", method = RequestMethod.GET)
-    @ResponseBody
     public Course getCourse(@PathVariable String courseId) {
-        return this.courseService.getCourse(Integer.parseInt(courseId));
+        return this.courseService.getCourse(Long.parseLong(courseId));
     }
 
     @RequestMapping(value = "courses", method = RequestMethod.POST)
-    @ResponseBody
-    public String addCourse(Course course) {
-        return this.courseService.addCourse(course);
+    public void addCourse(@RequestBody Course course) {
+        this.courseService.addCourse(course);
+    }
+
+    @RequestMapping("addCourse")
+    public String addNewCourse(Model model) {
+        Course course = new Course();
+        model.addAttribute("course", course);
+        return "NewCourse";
+    }
+
+    @RequestMapping(value = "saveCourse", method = RequestMethod.POST)
+    public String saveCourse(@ModelAttribute("course") Course course) {
+        this.courseService.addCourse(course);
+        return "redirect:/";
+    }
+
+    @RequestMapping("updateCourse/{id}")
+    public String updateCourseForm(@PathVariable (value = "id") String id, Model model) {
+        Course course = courseService.getCourse(Long.parseLong(id));
+        model.addAttribute("course", course);
+        return "updateEmployee";
+    }
+
+    @RequestMapping("/deleteCourse/{id}")
+    public String deleteCourse(@PathVariable (value = "id") Long id) {
+        this.courseService.deleteCourse(id);
+        return "redirect:/";
     }
 
     @RequestMapping(value = "courses", method = RequestMethod.PUT)
-    @ResponseBody
     public Course updateCourse(@RequestBody Course course) {
         return this.courseService.updateCourse(course);
     }
 
     @RequestMapping(value = "courses/{courseId}", method = RequestMethod.DELETE)
-    @ResponseBody
     public ResponseEntity<HttpStatus> deleteCourse(@PathVariable String courseId) {
         try {
-            this.courseService.deleteCourse(Integer.parseInt(courseId));
+            this.courseService.deleteCourse(Long.parseLong(courseId));
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

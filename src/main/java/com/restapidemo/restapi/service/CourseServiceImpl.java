@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,9 +31,17 @@ public class CourseServiceImpl implements CourseService{
     }
 
     @Override
-    public Course getCourse(int courseId) {
+    public Course getCourse(Long courseId) {
 
-        return courseRepo.findById(courseId);
+        Optional<Course> optional = courseRepo.findById(courseId);
+        Course course = null;
+        if (optional.isPresent()) {
+            course = optional.get();
+        } else {
+            throw new RuntimeException(" Course not found for id ::" + courseId);
+        }
+
+        return course;
         /*Course course = null;
         for(Course c: courseList) {
             if (c.getId() == courseId) {
@@ -44,12 +53,11 @@ public class CourseServiceImpl implements CourseService{
     }
 
     @Override
-    public String addCourse(Course course) {
+    public void addCourse(Course course) {
        /* courseList.add(course);
         return "Added course to database";*/
 
         courseRepo.save(course);
-        return "Added course to database";
     }
 
     @Override
@@ -66,10 +74,16 @@ public class CourseServiceImpl implements CourseService{
     }
 
     @Override
-    public void deleteCourse(int id) {
+    public void deleteCourse(Long id) {
         /*courseList = this.courseList.stream().filter(e -> e.getId() != id).collect(Collectors.toList());*/
 
-        Course course = courseRepo.findById((int) id);
+        Optional<Course> optional = courseRepo.findById(id);
+        Course course = null;
+        if (optional.isPresent()) {
+            course = optional.get();
+        } else {
+            throw new RuntimeException(" Course not found for id ::" + id);
+        }
         courseRepo.delete(course);
     }
 }

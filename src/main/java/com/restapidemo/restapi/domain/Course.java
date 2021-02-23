@@ -1,20 +1,22 @@
 package com.restapidemo.restapi.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
 public class Course {
 
     @Id
-    @GeneratedValue
-    private int id;
+    private Long id;
 
+    @Column
     private String title;
+
+    @Column
     private String description;
 
-    public Course(int id, String title, String description) {
+    public Course(Long id, String title, String description) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -24,11 +26,11 @@ public class Course {
 
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
