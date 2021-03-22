@@ -16,7 +16,17 @@
 
         <form action="#" th:action="@{/saveCourse}" th:object="${course}" method="post">
             <input type="text" th:field = "*{id}" placeholder="Course ID" class="form-control mb-4 col-4">
-            <input type="text" th:field = "*{title}" placeholder="Course Title" class="form-control mb-4 col-4">
+
+            <input
+                    type="text"
+                    name="title"
+                    th:field = "*{title}"
+                    placeholder="Course Title"
+                    class="form-control mb-4 col-4 is-invalid"
+                    th:value="${course.title}"
+                    th:classappend="${#fields.hasErrors('title')?'is-invalid':''}">
+            <p th:each="e : ${#fields.errors('title')}" th:text="${e}"></p>
+
             <input type="text" th:field = "*{description}" placeholder="Course Description" class="form-control mb-4 col-4">
             <button type="submit" class="btn btn-info col-2"> Save Course</button>
         </form>

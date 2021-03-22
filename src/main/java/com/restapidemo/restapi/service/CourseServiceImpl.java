@@ -3,6 +3,8 @@ package com.restapidemo.restapi.service;
 import com.restapidemo.restapi.domain.Course;
 import com.restapidemo.restapi.repository.CourseRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,19 +28,23 @@ public class CourseServiceImpl implements CourseService{
 
     @Override
     public List<Course> courses() {
-        return courseRepo.findAll();
+        List<Course> coursesFound = courseRepo.findAll();
+        return coursesFound;
         /*return courseList;*/
     }
 
     @Override
     public Course getCourse(Long courseId) {
 
-        Optional<Course> optional = courseRepo.findById(courseId);
         Course course = null;
-        if (optional.isPresent()) {
-            course = optional.get();
-        } else {
-            throw new RuntimeException(" Course not found for id ::" + courseId);
+        try {
+            Optional<Course> optional = courseRepo.findById(courseId);
+
+            if (optional.isPresent()) {
+                course = optional.get();
+            }
+        } catch (Exception e) {
+            e.getMessage();
         }
 
         return course;

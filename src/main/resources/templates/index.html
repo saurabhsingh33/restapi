@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Courses</title>
@@ -10,11 +10,34 @@
 </head>
 <body>
 
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed"
+                    data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                    aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span> <span
+                    class="icon-bar"></span> <span class="icon-bar"></span> <span
+                    class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#" th:href="@{/}">Welcome to App</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li sec:authorize="isAuthenticated()"><a th:href="@{/logout}">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<br>
+<br>
+
 <div align="center" class="container my-2">
 
     <h1> Courses List</h1>
     <a th:href = "@{addCourse}" class="btn btn-primary btn-sm mb-3"> Add Course</a>
-    <table border="1" class="table table-stripped table-reponsive-md">
+    <br>
+    <table border="1" class="table table-striped table-responsive-md">
         <thead>
             <tr>
                 <th> Course Id</th>
@@ -23,6 +46,7 @@
                 <th> Action</th>
             </tr>
         </thead>
+        <br>
         <tbody>
             <tr th:each="course : ${listCourses}">
                 <td th:text="${course.id}"></td>
